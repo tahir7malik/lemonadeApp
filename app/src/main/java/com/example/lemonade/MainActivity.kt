@@ -57,23 +57,43 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun LemonadeApp(modifier: Modifier = Modifier) {
-    var result by remember {
-        mutableIntStateOf(1)
+    /*
+    Composables are stateless by default, which means that they don't hold a value
+    and can be recomposed any time by the system, which results in the value
+    being reset. However, Compose provides a convenient way to avoid this.
+    Composable functions can store an object in memory using the remember
+    composable.
+    */
+
+    // result variable stores
+    var result by remember { // storing result value in memory using remember
+        mutableIntStateOf(1) // (default result value = 1)
+        /*
+        The mutableStateOf() function returns an observable. When the value of the result variable
+        changes, a recomposition is triggered, the value of the result is reflected, and the UI
+        refreshes.
+        */
     }
+
+    // stayCounter variable stores counter-value for tapping lemon case on 2 image
     var stayCounter by remember {
         mutableIntStateOf(0)
     }
+
+    // imageResource stores value according to case(when result = 1 or 2 or 3 or else)
     val imageResource = when(result) {
-        1 -> R.drawable.lemon_tree
-        2 -> R.drawable.lemon_squeeze
-        3 -> R.drawable.lemon_drink
-        else -> R.drawable.lemon_restart
+        1 -> R.drawable.lemon_tree // case1
+        2 -> R.drawable.lemon_squeeze // case2
+        3 -> R.drawable.lemon_drink // case3
+        else -> R.drawable.lemon_restart // case4
     }
+
+    // labelResource stores value according to case(when result = 1 or 2 or 3 or else)
     val labelResource = when(result) {
-        1 -> R.string.label1
-        2 -> R.string.label2
-        3 -> R.string.label3
-        else -> R.string.label4
+        1 -> R.string.label1 // case1
+        2 -> R.string.label2 // case2
+        3 -> R.string.label3 // case3
+        else -> R.string.label4 // case4
     }
     Column(
         verticalArrangement = Arrangement.Center,
@@ -84,7 +104,9 @@ fun LemonadeApp(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .clip(RoundedCornerShape(45.dp))
                     .background(Color(rgb(195, 236, 210)))
-                    .clickable {
+                    .clickable { // this will make our box clickable
+
+                        // logic for tapping and going for next slide
                         if (result == 2 && stayCounter < 3) {
                             stayCounter++
                         } else {
@@ -105,6 +127,7 @@ fun LemonadeApp(modifier: Modifier = Modifier) {
                             .padding(40.dp),
                         content = {
                             Image(
+                                // id gets imageResource value in the form of {1, 2, 3 or else(4)}
                                 painter = painterResource(id = imageResource),
                                 contentDescription = stringResource(id = R.string.img1Desc)
                             )
@@ -112,11 +135,14 @@ fun LemonadeApp(modifier: Modifier = Modifier) {
                     )
                 }
             )
+
+            // provides space between Box and Text
             Spacer(
                 modifier = Modifier
                     .height(20.dp)
             )
             Text(
+                // id gets stringResource value in the form of {1, 2, 3 or else(4)}
                 text = stringResource(id = labelResource),
                 fontSize = 20.sp
             )
